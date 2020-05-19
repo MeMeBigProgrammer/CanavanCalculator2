@@ -6,13 +6,6 @@ import (
 )
 
 // STRUCTURE
-/*
-main is the GUI with buttons and event handlers, and selections
-
-backend.go takes the input, has input mappings to Excel inputs
-interacts with Excel file
-
-*/
 
 var mainwin *ui.Window
 
