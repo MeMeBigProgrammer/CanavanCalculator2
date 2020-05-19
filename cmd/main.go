@@ -5,18 +5,29 @@ import (
 	_ "github.com/andlabs/ui/winmanifest"
 )
 
-// STRUCTURE
-
 var mainwin *ui.Window
 
-//entries
+// Entries
 var StrikesEntry *ui.Entry
 var BallsEntry *ui.Entry
 var PitcherNameEntry *ui.Entry
 var OpponentTeamName *ui.Entry
 var FilePathLabel *ui.Entry
 
-var FileSelection string
+// Dropdowns
+var PitchTypeSelection *ui.Combobox
+var PitchLocationSelection *ui.Combobox
+var OutcomeSelection *ui.Combobox
+var HitTypeSelection *ui.Combobox
+var HitLocationsSelection *ui.Combobox
+var PitcherHandSelection *ui.Combobox
+
+//Settings
+var AddPlayer *ui.Button
+var SelectFile *ui.Button
+var AddData *ui.Button
+var FileSelectionOutput *ui.Entry
+var PlayerSelection *ui.Combobox
 
 //Dropdown selections
 var PitchTypes = []string{"Change Up", "Fastball", "Curveball", "Slider", " "}
@@ -42,29 +53,10 @@ var HitLocations = []string{
 var PitcherHands = []string{
 	"Left Handed", "Right Handed", " "}
 
-//Dropdowns
-var PitchTypeSelection *ui.Combobox
-var PitchLocationSelection *ui.Combobox
-var OutcomeSelection *ui.Combobox
-var HitTypeSelection *ui.Combobox
-var HitLocationsSelection *ui.Combobox
-var PitcherHandSelection *ui.Combobox
+// Global Veriables
+var FileSelection string
 
-func setupUI() {
-	mainwin = ui.NewWindow("Canavan Calculator", 420, 440, true)
-	mainwin.OnClosing(func(*ui.Window) bool {
-		ui.Quit()
-		return true
-	})
-	ui.OnShouldQuit(func() bool {
-		mainwin.Destroy()
-		return true
-	})
-
-	// init Form Layout
-	inputGroup := ui.NewGroup("Inputs")
-	mainForm := ui.NewForm()
-
+func setupForm(form *ui.Form) {
 	// init Entries
 	StrikesEntry := ui.NewEntry()
 	BallsEntry := ui.NewEntry()
@@ -102,40 +94,68 @@ func setupUI() {
 		PitcherHandSelection.Append(item)
 	}
 
-	mainForm.Append("Strikes", StrikesEntry, false)
-	mainForm.Append("Balls", BallsEntry, false)
-	mainForm.Append("Pitch Type", PitchTypeSelection, false)
-	mainForm.Append("Pitch Location", PitchLocationSelection, false)
-	mainForm.Append("Outcome", OutcomeSelection, false)
-	mainForm.Append("Hit Type", HitTypeSelection, false)
-	mainForm.Append("Hit Direction", HitLocationsSelection, false)
-	mainForm.Append("Pitcher", PitcherNameEntry, false)
-	mainForm.Append("Pitcher Handedness", PitcherHandSelection, false)
-	mainForm.Append("Opponent Name", OpponentTeamName, false)
+	form.Append("Strikes", StrikesEntry, false)
+	form.Append("Balls", BallsEntry, false)
+	form.Append("Pitch Type", PitchTypeSelection, false)
+	form.Append("Pitch Location", PitchLocationSelection, false)
+	form.Append("Outcome", OutcomeSelection, false)
+	form.Append("Hit Type", HitTypeSelection, false)
+	form.Append("Hit Direction", HitLocationsSelection, false)
+	form.Append("Pitcher", PitcherNameEntry, false)
+	form.Append("Pitcher Handedness", PitcherHandSelection, false)
+	form.Append("Opponent Name", OpponentTeamName, false)
+}
 
+func setupUI() {
+	mainwin = ui.NewWindow("Canavan Calculator", 400, 480, true)
+	mainwin.OnClosing(func(*ui.Window) bool {
+		ui.Quit()
+		return true
+	})
+	ui.OnShouldQuit(func() bool {
+		mainwin.Destroy()
+		return true
+	})
+
+	// init Form Layout
+	inputGroup := ui.NewGroup("Inputs")
+	mainForm := ui.NewForm()
+	mainForm.SetPadded(true)
+	setupForm(mainForm)
 	inputGroup.SetChild(mainForm)
 
 	//Excel,Player management
-	excelGroup := ui.NewGroup("Destination Selection")
+	excelGroup := ui.NewGroup("Settings")
 	filePlayerGrid := ui.NewGrid()
+	filePlayerGrid.SetPadded(true)
 	excelGroup.SetChild(filePlayerGrid)
 
-	FileSelection := ui.NewEntry()
-	FileSelection.SetReadOnly(true)
-	filePlayerGrid.Append(FileSelection,0, 0, 1, 1,
+	AddPlayer = ui.NewButton("New Player")
+	AddData = ui.NewButton("Append Data")
+	SelectFile = ui.NewButton("Open Excel File")
+	FileSelectionOutput = ui.NewEntry()
+	PlayerSelection = ui.NewCombobox()
+
+
+	FileSelectionOutput.SetReadOnly(true)
+	filePlayerGrid.Append(FileSelectionOutput,0, 0, 1, 1,
 		true, ui.AlignFill, false, ui.AlignCenter)
 
-	SelectFile := ui.NewButton("Open Excel File")
 	filePlayerGrid.Append(SelectFile,1, 0, 1, 1,
-		true, ui.AlignEnd, false, ui.AlignCenter)
+		false, ui.AlignEnd, false, ui.AlignCenter)
 
-	PlayerSelection := ui.NewCombobox()
 	filePlayerGrid.Append(PlayerSelection,0, 1, 1, 1,
-		true, ui.AlignFill, false, ui.AlignCenter)
+		false, ui.AlignFill, false, ui.AlignCenter)
 
-	AddPlayer := ui.NewButton("New Player")
 	filePlayerGrid.Append(AddPlayer,1, 1, 1, 1,
-		true, ui.AlignFill, false, ui.AlignCenter)
+		false, ui.AlignFill, false, ui.AlignCenter)
+
+	filePlayerGrid.Append(ui.NewLabel("Add Data"),0, 2, 1, 1,
+		false, ui.AlignStart, false, ui.AlignCenter)
+
+	filePlayerGrid.Append(AddData,1, 2, 1, 1,
+		false, ui.AlignFill, false, ui.AlignCenter)
+
 
 	// append all groups
 	mainVBox := ui.NewVerticalBox()
