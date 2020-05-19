@@ -55,6 +55,7 @@ var PitcherHands = []string{
 
 // Global Veriables
 var FileSelection string
+var PlayerNames = []string{}
 
 func setupForm(form *ui.Form) {
 	// init Entries
@@ -155,6 +156,16 @@ func setupUI() {
 
 	filePlayerGrid.Append(AddData,1, 2, 1, 1,
 		false, ui.AlignFill, false, ui.AlignCenter)
+
+	SelectFile.OnClicked(func(*ui.Button) {
+		FileSelection = ui.OpenFile(mainwin)
+		FileSelectionOutput.SetText(FileSelection)
+		isValid, _ := IsValidExcel(FileSelection)
+		if isValid {
+			PlayerNames = GetPlayerNames(FileSelection)
+			
+		}
+	})
 
 
 	// append all groups
