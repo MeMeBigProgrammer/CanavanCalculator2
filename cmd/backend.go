@@ -34,3 +34,11 @@ func GetPlayerNames(filepath string) (names []string) {
   return playerList
 
 }
+
+func AddNewPlayerSheet (filepath string, sheetname string){
+	//f, _ := excelize.OpenFile(filepath)
+}
+
+func AppendDataRow(sheetname string) {
+
+}

@@ -57,6 +57,19 @@ var PitcherHands = []string{
 var FileSelection string
 var PlayerNames = []string{}
 
+func setupDialogBox(box *ui.Window, entry *ui.Entry, button *ui.Button) {
+	hbox := ui.NewHorizontalBox()
+	group := ui.NewGroup("")
+
+	group.SetChild(hbox)
+	box.SetChild(group)
+	hbox.SetPadded(true)
+
+	hbox.Append(entry, true)
+	hbox.Append(button, false)
+
+}
+
 func setupForm(form *ui.Form) {
 	// init Entries
 	StrikesEntry := ui.NewEntry()
@@ -107,6 +120,39 @@ func setupForm(form *ui.Form) {
 	form.Append("Opponent Name", OpponentTeamName, false)
 }
 
+func setupSettingsGrid(grid *ui.Grid) {
+	SelectFile = ui.NewButton("Open Excel File")
+	FileSelectionOutput = ui.NewEntry()
+
+	AddPlayer = ui.NewButton("New Player")
+	PlayerSelection = ui.NewCombobox()
+
+	AddData = ui.NewButton("Append Data")
+
+	AddPlayer.Disable()
+	AddData.Disable()
+	PlayerSelection.Disable()
+
+	FileSelectionOutput.SetReadOnly(true)
+	grid.Append(FileSelectionOutput,0, 0, 1, 1,
+		true, ui.AlignFill, false, ui.AlignFill)
+
+	grid.Append(SelectFile,1, 0, 1, 1,
+		false, ui.AlignEnd, false, ui.AlignFill)
+
+	grid.Append(PlayerSelection,0, 1, 1, 1,
+		false, ui.AlignFill, false, ui.AlignFill)
+
+	grid.Append(AddPlayer,1, 1, 1, 1,
+		false, ui.AlignFill, false, ui.AlignFill)
+
+	grid.Append(ui.NewLabel("Add Data"),0, 2, 1, 1,
+		false, ui.AlignStart, false, ui.AlignFill)
+
+	grid.Append(AddData,1, 2, 1, 1,
+		false, ui.AlignFill, false, ui.AlignFill)
+}
+
 func setupUI() {
 	mainwin = ui.NewWindow("Canavan Calculator", 400, 480, true)
 	mainwin.OnClosing(func(*ui.Window) bool {
@@ -128,45 +174,46 @@ func setupUI() {
 	//Excel,Player management
 	excelGroup := ui.NewGroup("Settings")
 	filePlayerGrid := ui.NewGrid()
+	setupSettingsGrid(filePlayerGrid)
 	filePlayerGrid.SetPadded(true)
 	excelGroup.SetChild(filePlayerGrid)
 
-	AddPlayer = ui.NewButton("New Player")
-	AddData = ui.NewButton("Append Data")
-	SelectFile = ui.NewButton("Open Excel File")
-	FileSelectionOutput = ui.NewEntry()
-	PlayerSelection = ui.NewCombobox()
-
-
-	FileSelectionOutput.SetReadOnly(true)
-	filePlayerGrid.Append(FileSelectionOutput,0, 0, 1, 1,
-		true, ui.AlignFill, false, ui.AlignCenter)
-
-	filePlayerGrid.Append(SelectFile,1, 0, 1, 1,
-		false, ui.AlignEnd, false, ui.AlignCenter)
-
-	filePlayerGrid.Append(PlayerSelection,0, 1, 1, 1,
-		false, ui.AlignFill, false, ui.AlignCenter)
-
-	filePlayerGrid.Append(AddPlayer,1, 1, 1, 1,
-		false, ui.AlignFill, false, ui.AlignCenter)
-
-	filePlayerGrid.Append(ui.NewLabel("Add Data"),0, 2, 1, 1,
-		false, ui.AlignStart, false, ui.AlignCenter)
-
-	filePlayerGrid.Append(AddData,1, 2, 1, 1,
-		false, ui.AlignFill, false, ui.AlignCenter)
 
 	SelectFile.OnClicked(func(*ui.Button) {
 		FileSelection = ui.OpenFile(mainwin)
 		FileSelectionOutput.SetText(FileSelection)
 		isValid, _ := IsValidExcel(FileSelection)
 		if isValid {
+			// I have to replace the combobox, buh moment
+			PlayerSelection = ui.NewCombobox()
+			filePlayerGrid.Append(PlayerSelection,0, 1, 1, 1,
+				false, ui.AlignFill, false, ui.AlignFill)
+
 			PlayerNames = GetPlayerNames(FileSelection)
-			
+			for _, value := range PlayerNames {
+				PlayerSelection.Append(value)
+			}
+			AddPlayer.Enable()
+			AddData.Enable()
+			PlayerSelection.Enable()
+
+		} else {
+			AddPlayer.Disable()
+			AddData.Disable()
+			PlayerSelection.Disable()
 		}
 	})
 
+	AddPlayer.OnClicked(func(*ui.Button) {
+		dialogBox := ui.NewWindow("New Player", 240,75, false)
+		dialogBox.OnClosing(func(*ui.Window) bool {
+			return true
+		})
+		nameEntry := ui.NewEntry()
+		submitButton := ui.NewButton("Add")
+		setupDialogBox(dialogBox, nameEntry, submitButton)
+		dialogBox.Show()
+	})
 
 	// append all groups
 	mainVBox := ui.NewVerticalBox()

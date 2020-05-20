@@ -5,6 +5,8 @@ I made a program in 7th grade that was horrible, I've included that in `/assets`
 
 I remade it by using the existing functionality in Excel and a small Golang program.
 
+The program is named after the MICDS Varsity Baseball coach, [Mr. Canavan](https://www.linkedin.com/in/tim-canavan-0a88a483)
+
 ## What does this do?
 
 The Excel sheet is structured with one `Calculations` sheet, in which all the statistics are calculated and displayed. All other sheets are raw At-Bat statistics, and you have one sheet for each player.
