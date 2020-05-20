@@ -14,28 +14,28 @@ func IsValidExcel(filepath string) (isValid bool, error error) {
 		fmt.Println(err)
 		return false, err
 	}
-  for _, name := range f.GetSheetMap() {
-    if f.GetCellValue(name, "A1") == "NOT" {
-      fmt.Println("Valid!")
-      return true, nil
-    }
-  }
+	for _, name := range f.GetSheetMap() {
+		if f.GetCellValue(name, "A1") == "NOT" {
+			fmt.Println("Valid!")
+			return true, nil
+		}
+	}
 	return false, nil
 }
 
 func GetPlayerNames(filepath string) (names []string) {
-  f, _ := excelize.OpenFile(filepath)
-  var playerList []string
-  for _, name := range f.GetSheetMap() {
-    if f.GetCellValue(name, "A1") != "NOT" {
-      playerList = append(playerList, name)
-    }
-  }
-  return playerList
+	f, _ := excelize.OpenFile(filepath)
+	var playerList []string
+	for _, name := range f.GetSheetMap() {
+		if f.GetCellValue(name, "A1") != "NOT" {
+			playerList = append(playerList, name)
+		}
+	}
+	return playerList
 
 }
 
-func AddNewPlayerSheet (filepath string, sheetname string){
+func AddNewPlayerSheet(filepath string, sheetname string) {
 	//f, _ := excelize.OpenFile(filepath)
 }
 
