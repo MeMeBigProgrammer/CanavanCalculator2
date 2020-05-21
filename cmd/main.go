@@ -5,7 +5,8 @@ import (
 	_ "github.com/andlabs/ui/winmanifest"
 )
 
-var mainwin *ui.Window
+var mainWin *ui.Window
+var filePlayerGrid *ui.Grid
 
 // Entries
 var StrikesEntry *ui.Entry
@@ -32,7 +33,7 @@ var PlayerSelection *ui.Combobox
 //Dropdown selections
 var PitchTypes = []string{"Change Up", "Fastball", "Curveball", "Slider", " "}
 
-var PitchLocations = []string{
+var PitchLocations = []string{ // TODO fix this mess
 	"Ball-Inside-High", "Ball-Inside-low", "Ball-Outside-High",
 	"Ball-Outside-Low", "Ball-Middle Inside-High", "Ball-Middle Outside-High", "Ball-Inside-Low",
 	"Ball-Outside-Low", "Strike-Inside-High", "Strike-Inside-Low",
@@ -57,50 +58,52 @@ var PitcherHands = []string{
 var FileSelection string
 var PlayerNames = []string{}
 
+func refreshPlayerSelection() {
+	PlayerSelection = ui.NewCombobox()
+	filePlayerGrid.Append(PlayerSelection, 0, 1, 1, 1,
+		false, ui.AlignFill, false, ui.AlignFill)
+
+	PlayerNames = getPlayerNames(FileSelection)
+	for _, value := range PlayerNames {
+		PlayerSelection.Append(value)
+	}
+}
+
 func setupUI() {
-	mainwin = ui.NewWindow("Canavan Calculator", 400, 480, true)
-	mainwin.OnClosing(func(*ui.Window) bool {
+	mainWin = ui.NewWindow("Canavan Calculator", 370, 480, true)
+	mainWin.OnClosing(func(*ui.Window) bool {
 		ui.Quit()
 		return true
 	})
 	ui.OnShouldQuit(func() bool {
-		mainwin.Destroy()
+		mainWin.Destroy()
 		return true
 	})
 
 	// init Form Layout
 	inputGroup := ui.NewGroup("Inputs")
 	mainForm := ui.NewForm()
-	mainForm.SetPadded(true)
 	setupForm(mainForm)
 	inputGroup.SetChild(mainForm)
 
 	//Excel,Player management
 	excelGroup := ui.NewGroup("Settings")
-	filePlayerGrid := ui.NewGrid()
+	filePlayerGrid = ui.NewGrid()
 	setupSettingsGrid(filePlayerGrid)
-	filePlayerGrid.SetPadded(true)
 	excelGroup.SetChild(filePlayerGrid)
 
+	// button actions
 	SelectFile.OnClicked(func(*ui.Button) {
-		FileSelection = ui.OpenFile(mainwin)
+		FileSelection = ui.OpenFile(mainWin)
 		FileSelectionOutput.SetText(FileSelection)
-		isValid, _ := IsValidExcel(FileSelection)
+		isValid, _ := isValidExcel(FileSelection)
 		if isValid {
-			// I have to replace the combobox, buh moment
-			PlayerSelection = ui.NewCombobox()
-			filePlayerGrid.Append(PlayerSelection, 0, 1, 1, 1,
-				false, ui.AlignFill, false, ui.AlignFill)
-
-			PlayerNames = GetPlayerNames(FileSelection)
-			for _, value := range PlayerNames {
-				PlayerSelection.Append(value)
-			}
+			refreshPlayerSelection()
 			AddPlayer.Enable()
 			AddData.Enable()
 			PlayerSelection.Enable()
-
 		} else {
+			ui.MsgBoxError(mainWin, "Error!", "Not a valid Excel file!")
 			AddPlayer.Disable()
 			AddData.Disable()
 			PlayerSelection.Disable()
@@ -108,7 +111,7 @@ func setupUI() {
 	})
 
 	AddPlayer.OnClicked(func(*ui.Button) {
-		dialogBox := ui.NewWindow("New Player", 240, 75, false)
+		dialogBox := ui.NewWindow("New Player", 150, 75, false)
 		dialogBox.OnClosing(func(*ui.Window) bool {
 			return true
 		})
@@ -118,6 +121,11 @@ func setupUI() {
 		dialogBox.Show()
 	})
 
+	AddData.OnClicked(func(*ui.Button) {
+		// verify valid input
+		// send data to excel and save
+	})
+
 	// append all groups
 	mainVBox := ui.NewVerticalBox()
 	mainVBox.SetPadded(true)
@@ -125,10 +133,10 @@ func setupUI() {
 	mainVBox.Append(excelGroup, false)
 
 	// main window
-	mainwin.SetChild(mainVBox)
-	mainwin.SetMargined(true)
+	mainWin.SetChild(mainVBox)
+	mainWin.SetMargined(true)
 
-	mainwin.Show()
+	mainWin.Show()
 }
 
 func main() {

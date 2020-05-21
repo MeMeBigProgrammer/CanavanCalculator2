@@ -6,6 +6,8 @@ import (
 )
 
 func setupForm(form *ui.Form) {
+	form.SetPadded(true)
+
 	// init Entries
 	StrikesEntry := ui.NewEntry()
 	BallsEntry := ui.NewEntry()
@@ -56,6 +58,7 @@ func setupForm(form *ui.Form) {
 }
 
 func setupSettingsGrid(grid *ui.Grid) {
+	grid.SetPadded(true)
 	SelectFile = ui.NewButton("Open Excel File")
 	FileSelectionOutput = ui.NewEntry()
 
@@ -89,14 +92,25 @@ func setupSettingsGrid(grid *ui.Grid) {
 }
 
 func setupDialogBox(box *ui.Window, entry *ui.Entry, button *ui.Button) {
-	hbox := ui.NewHorizontalBox()
+	hBox := ui.NewHorizontalBox()
 	group := ui.NewGroup("")
 
-	group.SetChild(hbox)
+	group.SetChild(hBox)
 	box.SetChild(group)
-	hbox.SetPadded(true)
+	hBox.SetPadded(true)
 
-	hbox.Append(entry, true)
-	hbox.Append(button, false)
+	hBox.Append(entry, true)
+	hBox.Append(button, false)
+
+	button.OnClicked(func(*ui.Button) {
+		isGood, err := addNewPlayerSheet(FileSelection, entry.Text())
+		if isGood && err == nil {
+			ui.MsgBox(box, "Sucess!", "A a new player has been added.")
+			box.Destroy()
+			refreshPlayerSelection()
+		} else {
+			ui.MsgBoxError(box, "Error!", err.Error())
+		}
+	})
 
 }

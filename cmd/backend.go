@@ -5,10 +5,16 @@ import (
 	"github.com/360EntSecGroup-Skylar/excelize"
 )
 
-// Maps for converting selections into Excel data
+// Constants for Excel
+var headers = []string{"Date", "Plate Appearence", "Balls", "Strikes", "Total Pitches",
+	"Pitch Type", "Pitch Location", "Outcome", "Hit Type", "Hit Direction", "Pitcher",
+	"Pitcher Orientation", "Opponent", "Pitcher"}
 
-//take in path to file, check valid Excel and has Player sheets
-func IsValidExcel(filepath string) (isValid bool, error error) {
+// Q: Why open file in every function?
+// A: Reduces chance of IO conflict
+
+//take in path to file, check valid Excel and if it has Player sheets
+func isValidExcel(filepath string) (isValid bool, error error) {
 	f, err := excelize.OpenFile(filepath)
 	if err != nil {
 		fmt.Println(err)
@@ -23,7 +29,7 @@ func IsValidExcel(filepath string) (isValid bool, error error) {
 	return false, nil
 }
 
-func GetPlayerNames(filepath string) (names []string) {
+func getPlayerNames(filepath string) (names []string) {
 	f, _ := excelize.OpenFile(filepath)
 	var playerList []string
 	for _, name := range f.GetSheetMap() {
@@ -35,10 +41,27 @@ func GetPlayerNames(filepath string) (names []string) {
 
 }
 
-func AddNewPlayerSheet(filepath string, sheetname string) {
-	//f, _ := excelize.OpenFile(filepath)
+func addNewPlayerSheet(filepath string, sheetname string) (bool, error) {
+	f, _ := excelize.OpenFile(filepath)
+	f.NewSheet(sheetname)
+	f.SetSheetRow(sheetname, "A1", &headers)
+	err := f.Save()
+	if err != nil {
+		fmt.Println(err)
+		return false, err
+	}
+
+	return true, nil
+
 }
 
-func AppendDataRow(sheetname string) {
+func appendDataRow(sheetname string) (err error) {
+
+	return nil
+
+}
+
+func isValidInput(balls string, strikes string, pitchType string, pitchLocation string, outcome string, hitType string) (err error) {
+	return nil
 
 }
