@@ -4,7 +4,6 @@ import (
 	"github.com/andlabs/ui"
 	_ "github.com/andlabs/ui/winmanifest"
 	"strconv"
-	"fmt"
 )
 
 var mainWin *ui.Window
@@ -61,7 +60,7 @@ var FileSelection string
 var PlayerNames = []string{}
 
 func getComboBoxValue(box *ui.Combobox, options []string) string {
-	inputIndex := string(box.Selected())
+	inputIndex := strconv.Itoa(box.Selected())
 	if inputIndex == "-1" {
 		return " "
 	}
@@ -74,7 +73,14 @@ func refreshPlayerSelection() {
 	filePlayerGrid.Append(PlayerSelection, 0, 1, 1, 1,
 		false, ui.AlignFill, false, ui.AlignFill)
 
-	PlayerNames = getPlayerNames(FileSelection)
+	names, err := getPlayerNames(FileSelection)
+	if err != nil {
+		ui.MsgBoxError(mainWin, "Error!", err.Error())
+		return
+	} else {
+		PlayerNames = names
+	}
+
 	for _, value := range PlayerNames {
 		PlayerSelection.Append(value)
 	}
@@ -133,7 +139,6 @@ func setupUI() {
 	})
 
 	AddData.OnClicked(func(*ui.Button) {
-
 		// convert entries to ints
 		strikesNumber, StrikeErr := strconv.ParseInt(StrikesEntry.Text(), 0, 64)
 		ballsNumber, BallErr := strconv.ParseInt(BallsEntry.Text(), 0, 64)
@@ -144,20 +149,25 @@ func setupUI() {
 		}
 
 		newData := DataInput{
-			Strikes: int(strikesNumber),
-			Balls: int(ballsNumber),
-		  PitchType: getComboBoxValue(PitchTypeSelection, PitchTypes),
-			PitchLocation: getComboBoxValue(PitchLocationSelection, PitchLocations),
-		  Outcome: getComboBoxValue(OutcomeSelection, Outcomes),
-			HitType: getComboBoxValue(HitTypeSelection, HitTypes),
-			HitLocations: getComboBoxValue(HitLocationsSelection, HitLocations),
-			PitcherName: PitcherNameEntry.Text(),
-			PitcherHands: getComboBoxValue(PitcherHandSelection, PitcherHands),
+			Strikes:          int(strikesNumber),
+			Balls:            int(ballsNumber),
+			PitchType:        getComboBoxValue(PitchTypeSelection, PitchTypes),
+			PitchLocation:    getComboBoxValue(PitchLocationSelection, PitchLocations),
+			Outcome:          getComboBoxValue(OutcomeSelection, Outcomes),
+			HitType:          getComboBoxValue(HitTypeSelection, HitTypes),
+			HitLocations:     getComboBoxValue(HitLocationsSelection, HitLocations),
+			PitcherName:      PitcherNameEntry.Text(),
+			PitcherHands:     getComboBoxValue(PitcherHandSelection, PitcherHands),
 			OpponentTeamName: OpponentTeamName.Text(),
-			sheetname: getComboBoxValue(PlayerSelection, PlayerNames) }
-			fmt.Println(newData)
-		// verify valid input
-		// send data to excel and save
+			sheetname:        getComboBoxValue(PlayerSelection, PlayerNames)}
+
+		isValid, err := newData.IsValidInput()
+
+		if !isValid {
+			ui.MsgBoxError(mainWin, "Error!", err.Error())
+		} else {
+			// send data to excel and save
+		}
 	})
 
 	// append all groups
@@ -180,5 +190,6 @@ func main() {
 	2. Add image display
 	3. Add icons
 	4. Upload to github, rename files, and add warning about excel refresh
+	5. Better error handling in backend.go
 	*/
 }

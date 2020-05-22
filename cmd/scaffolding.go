@@ -103,8 +103,8 @@ func setupDialogBox(box *ui.Window, entry *ui.Entry, button *ui.Button) {
 	hBox.Append(button, false)
 
 	button.OnClicked(func(*ui.Button) {
-		isGood, err := addNewPlayerSheet(FileSelection, entry.Text())
-		if isGood && err == nil {
+		err := addNewPlayerSheet(FileSelection, entry.Text())
+		if err == nil {
 			ui.MsgBox(box, "Sucess!", "A a new player has been added.")
 			box.Destroy()
 			refreshPlayerSelection()

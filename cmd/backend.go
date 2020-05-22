@@ -17,7 +17,6 @@ var headers = []string{"Date", "Plate Appearence", "Balls", "Strikes", "Total Pi
 func isValidExcel(filepath string) (isValid bool, error error) {
 	f, err := excelize.OpenFile(filepath)
 	if err != nil {
-		fmt.Println(err)
 		return false, err
 	}
 	for _, name := range f.GetSheetMap() {
@@ -29,39 +28,40 @@ func isValidExcel(filepath string) (isValid bool, error error) {
 	return false, nil
 }
 
-func getPlayerNames(filepath string) (names []string) {
-	f, _ := excelize.OpenFile(filepath)
+func getPlayerNames(filepath string) (names []string, err error) {
+	f, err := excelize.OpenFile(filepath)
+	if err != nil {
+		return nil, err
+	}
 	var playerList []string
 	for _, name := range f.GetSheetMap() {
 		if f.GetCellValue(name, "A1") != "NOT" {
 			playerList = append(playerList, name)
 		}
 	}
-	return playerList
+	return playerList, nil
 
 }
 
-func addNewPlayerSheet(filepath string, sheetname string) (bool, error) {
-	f, _ := excelize.OpenFile(filepath)
-	f.NewSheet(sheetname)
-	f.SetSheetRow(sheetname, "A1", &headers)
-	err := f.Save()
+func addNewPlayerSheet(filepath string, sheetname string) (error) {
+	f, err := excelize.OpenFile(filepath)
 	if err != nil {
-		fmt.Println(err)
-		return false, err
+		return err
 	}
 
-	return true, nil
-
-}
-
-func appendDataRow(sheetname string) (err error) {
+	f.NewSheet(sheetname)
+	f.SetSheetRow(sheetname, "A1", &headers)
+	err = f.Save()
+	if err != nil {
+		return err
+	}
 
 	return nil
 
 }
 
-func isValidInput(balls string, strikes string, pitchType string, pitchLocation string, outcome string, hitType string) (err error) {
+func appendDataRow(sheetname string, data DataInput) (err error) {
+
 	return nil
 
 }
