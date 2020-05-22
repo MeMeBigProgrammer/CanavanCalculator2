@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/andlabs/ui"
 	_ "github.com/andlabs/ui/winmanifest"
+	"strconv"
+	"fmt"
 )
 
 var mainWin *ui.Window
@@ -57,6 +59,15 @@ var PitcherHands = []string{
 // Global Veriables
 var FileSelection string
 var PlayerNames = []string{}
+
+func getComboBoxValue(box *ui.Combobox, options []string) string {
+	inputIndex := string(box.Selected())
+	if inputIndex == "-1" {
+		return " "
+	}
+	index, _ := strconv.ParseInt(inputIndex, 0, 64)
+	return options[index]
+}
 
 func refreshPlayerSelection() {
 	PlayerSelection = ui.NewCombobox()
@@ -122,6 +133,29 @@ func setupUI() {
 	})
 
 	AddData.OnClicked(func(*ui.Button) {
+
+		// convert entries to ints
+		strikesNumber, StrikeErr := strconv.ParseInt(StrikesEntry.Text(), 0, 64)
+		ballsNumber, BallErr := strconv.ParseInt(BallsEntry.Text(), 0, 64)
+
+		if StrikeErr != nil || BallErr != nil {
+			ui.MsgBoxError(mainWin, "Error!", "Balls and Strikes must be a number!")
+			return
+		}
+
+		newData := DataInput{
+			Strikes: int(strikesNumber),
+			Balls: int(ballsNumber),
+		  PitchType: getComboBoxValue(PitchTypeSelection, PitchTypes),
+			PitchLocation: getComboBoxValue(PitchLocationSelection, PitchLocations),
+		  Outcome: getComboBoxValue(OutcomeSelection, Outcomes),
+			HitType: getComboBoxValue(HitTypeSelection, HitTypes),
+			HitLocations: getComboBoxValue(HitLocationsSelection, HitLocations),
+			PitcherName: PitcherNameEntry.Text(),
+			PitcherHands: getComboBoxValue(PitcherHandSelection, PitcherHands),
+			OpponentTeamName: OpponentTeamName.Text(),
+			sheetname: getComboBoxValue(PlayerSelection, PlayerNames) }
+			fmt.Println(newData)
 		// verify valid input
 		// send data to excel and save
 	})
@@ -141,4 +175,10 @@ func setupUI() {
 
 func main() {
 	ui.Main(setupUI)
+	/* TODO:
+	1. Add Data Append and verify
+	2. Add image display
+	3. Add icons
+	4. Upload to github, rename files, and add warning about excel refresh
+	*/
 }

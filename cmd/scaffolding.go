@@ -9,38 +9,38 @@ func setupForm(form *ui.Form) {
 	form.SetPadded(true)
 
 	// init Entries
-	StrikesEntry := ui.NewEntry()
-	BallsEntry := ui.NewEntry()
-	PitcherNameEntry := ui.NewEntry()
-	OpponentTeamName := ui.NewEntry()
+	StrikesEntry = ui.NewEntry()
+	BallsEntry = ui.NewEntry()
+	PitcherNameEntry = ui.NewEntry()
+	OpponentTeamName = ui.NewEntry()
 
 	//init Dropdowns
-	var PitchTypeSelection = ui.NewCombobox()
+	PitchTypeSelection = ui.NewCombobox()
 	for _, item := range PitchTypes {
 		PitchTypeSelection.Append(item)
 	}
 
-	var PitchLocationSelection = ui.NewCombobox()
+	PitchLocationSelection = ui.NewCombobox()
 	for _, item := range PitchLocations {
 		PitchLocationSelection.Append(item)
 	}
 
-	var OutcomeSelection = ui.NewCombobox()
+	OutcomeSelection = ui.NewCombobox()
 	for _, item := range Outcomes {
 		OutcomeSelection.Append(item)
 	}
 
-	var HitTypeSelection = ui.NewCombobox()
+	HitTypeSelection = ui.NewCombobox()
 	for _, item := range HitTypes {
 		HitTypeSelection.Append(item)
 	}
 
-	var HitLocationsSelection = ui.NewCombobox()
+	HitLocationsSelection = ui.NewCombobox()
 	for _, item := range HitLocations {
 		HitLocationsSelection.Append(item)
 	}
 
-	var PitcherHandSelection = ui.NewCombobox()
+	PitcherHandSelection = ui.NewCombobox()
 	for _, item := range PitcherHands {
 		PitcherHandSelection.Append(item)
 	}

@@ -1,7 +1,7 @@
 package main
 
-var dataMappings = map[string]string{
-	" ":                  " ",
+var dataInputMappings = map[string]string{
+	" ":                  "",
 	"Change Up":          "CH",
 	"Fastball":           "FB",
 	"Curveball":          "CB",
@@ -27,3 +27,21 @@ var dataMappings = map[string]string{
 	"Left Field":         "7",
 	"Left Handed":        "LHP",
 	"Right Handed":       "RHP"}
+
+type DataInput struct {
+	Strikes          int
+	Balls            int
+	PitchType        string
+	PitchLocation    string
+	Outcome          string
+	HitType          string
+	HitLocations     string
+	PitcherName      string
+	PitcherHands     string
+	OpponentTeamName string
+	sheetname				 string
+}
+
+func (data DataInput) IsValidInput (bool) {
+
+}
