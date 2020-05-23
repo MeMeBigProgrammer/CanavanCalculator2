@@ -67,28 +67,46 @@ func setupSettingsGrid(grid *ui.Grid) {
 
 	AddData = ui.NewButton("Append Data")
 
+	ShowHitLocations = ui.NewButton("Show Guide")
+
 	AddPlayer.Disable()
 	AddData.Disable()
 	PlayerSelection.Disable()
 
-	FileSelectionOutput.SetReadOnly(true)
-	grid.Append(FileSelectionOutput, 0, 0, 1, 1,
-		true, ui.AlignFill, false, ui.AlignFill)
-
-	grid.Append(SelectFile, 1, 0, 1, 1,
-		false, ui.AlignEnd, false, ui.AlignFill)
-
-	grid.Append(PlayerSelection, 0, 1, 1, 1,
+	grid.Append(ShowHitLocations, 1, 0, 1, 1,
 		false, ui.AlignFill, false, ui.AlignFill)
 
-	grid.Append(AddPlayer, 1, 1, 1, 1,
-		false, ui.AlignFill, false, ui.AlignFill)
-
-	grid.Append(ui.NewLabel("Add Data"), 0, 2, 1, 1,
+	grid.Append(ui.NewLabel("Toggle"), 0, 0, 1, 1,
 		false, ui.AlignStart, false, ui.AlignFill)
 
-	grid.Append(AddData, 1, 2, 1, 1,
+	FileSelectionOutput.SetReadOnly(true)
+	grid.Append(FileSelectionOutput, 0, 1, 1, 1,
+		true, ui.AlignFill, false, ui.AlignFill)
+
+	grid.Append(SelectFile, 1, 1, 1, 1,
+		false, ui.AlignEnd, false, ui.AlignFill)
+
+	grid.Append(PlayerSelection, 0, 2, 1, 1,
 		false, ui.AlignFill, false, ui.AlignFill)
+
+	grid.Append(AddPlayer, 1, 2, 1, 1,
+		false, ui.AlignFill, false, ui.AlignFill)
+
+	grid.Append(ui.NewLabel("Add Data"), 0, 3, 1, 1,
+		false, ui.AlignStart, false, ui.AlignFill)
+
+	grid.Append(AddData, 1, 3, 1, 1,
+		false, ui.AlignFill, false, ui.AlignFill)
+
+	ShowHitLocations.OnClicked(func(*ui.Button) {
+		// Get image from excel, if there is One
+		// save copy of jpg next to .exe
+		// open using run
+		// delete on close
+		showHitLocationGuideImage(FileSelection)
+
+	})
+
 }
 
 func setupDialogBox(box *ui.Window, entry *ui.Entry, button *ui.Button) {

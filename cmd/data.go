@@ -43,7 +43,7 @@ type DataInput struct {
 	PitcherName      string
 	PitcherHands     string
 	OpponentTeamName string
-	sheetname        string
+	sheetName        string
 }
 
 func (data DataInput) IsValidInput() (isvalid bool, error error) {
@@ -56,7 +56,7 @@ func (data DataInput) IsValidInput() (isvalid bool, error error) {
 	error = nil
 	isvalid = true
 
-	if data.sheetname == " " {
+	if data.sheetName == " " {
 		isvalid = false
 		error = errors.New("You must select a player!")
 	}

@@ -25,10 +25,13 @@ In the `Calculations` sheet, you can change the sheet name at the top, to switch
 
 The Go program can load the Excel sheet to make entering data easier and checking for invalid inputs (i.e. 4 strikes, hitting a Line Drive while walking)
 
-## LICENSE
+## Known Issues
+- Because the UI package lacks a way to display images, I embedded the image into the spreadsheet and use open-golang to show the image
 
+## LICENSE
 License is MIT
 
 Thanks to the following projects that this relies on:
 - For UI: https://github.com/andlabs/ui
 - For Excel: https://github.com/360EntSecGroup-Skylar/excelize
+- For Opening: https://github.com/skratchdot/open-golang

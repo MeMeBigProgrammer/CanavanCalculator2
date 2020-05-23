@@ -4,6 +4,7 @@ import (
 	"github.com/andlabs/ui"
 	_ "github.com/andlabs/ui/winmanifest"
 	"strconv"
+	"os"
 )
 
 var mainWin *ui.Window
@@ -28,18 +29,15 @@ var PitcherHandSelection *ui.Combobox
 var AddPlayer *ui.Button
 var SelectFile *ui.Button
 var AddData *ui.Button
+var ShowHitLocations *ui.Button
 var FileSelectionOutput *ui.Entry
 var PlayerSelection *ui.Combobox
 
 //Dropdown selections
 var PitchTypes = []string{"Change Up", "Fastball", "Curveball", "Slider", " "}
 
-var PitchLocations = []string{ // TODO fix this mess
-	"Ball-Inside-High", "Ball-Inside-low", "Ball-Outside-High",
-	"Ball-Outside-Low", "Ball-Middle Inside-High", "Ball-Middle Outside-High", "Ball-Inside-Low",
-	"Ball-Outside-Low", "Strike-Inside-High", "Strike-Inside-Low",
-	"Strike-Outside-Low", "Strike-Outside-High", "Strike-Center",
-	"Strike-Center-High", "Strike-Center-Low", " "}
+var PitchLocations = []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+	"11", "12", " "}
 
 var Outcomes = []string{
 	"Hard Hit", "Routine Hit", "Weak Hit", "Standing Strikeout", "Strikeout", "Walk",
@@ -70,7 +68,7 @@ func getComboBoxValue(box *ui.Combobox, options []string) string {
 
 func refreshPlayerSelection() {
 	PlayerSelection = ui.NewCombobox()
-	filePlayerGrid.Append(PlayerSelection, 0, 1, 1, 1,
+	filePlayerGrid.Append(PlayerSelection, 0, 2, 1, 1,
 		false, ui.AlignFill, false, ui.AlignFill)
 
 	names, err := getPlayerNames(FileSelection)
@@ -90,10 +88,12 @@ func setupUI() {
 	mainWin = ui.NewWindow("Canavan Calculator", 370, 480, true)
 	mainWin.OnClosing(func(*ui.Window) bool {
 		ui.Quit()
+		os.Remove("pic.jpg")
 		return true
 	})
 	ui.OnShouldQuit(func() bool {
 		mainWin.Destroy()
+		os.Remove("pic.jpg")
 		return true
 	})
 
@@ -159,13 +159,14 @@ func setupUI() {
 			PitcherName:      PitcherNameEntry.Text(),
 			PitcherHands:     getComboBoxValue(PitcherHandSelection, PitcherHands),
 			OpponentTeamName: OpponentTeamName.Text(),
-			sheetname:        getComboBoxValue(PlayerSelection, PlayerNames)}
+			sheetName:        getComboBoxValue(PlayerSelection, PlayerNames)}
 
 		isValid, err := newData.IsValidInput()
 
 		if !isValid {
 			ui.MsgBoxError(mainWin, "Error!", err.Error())
 		} else {
+			appendDataRow(FileSelection, newData)
 			// send data to excel and save
 		}
 	})
@@ -188,8 +189,5 @@ func main() {
 	/* TODO:
 	1. Add Data Append and verify
 	2. Add image display
-	3. Add icons
-	4. Upload to github, rename files, and add warning about excel refresh
-	5. Better error handling in backend.go
 	*/
 }
