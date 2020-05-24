@@ -129,5 +129,31 @@ func setupDialogBox(box *ui.Window, entry *ui.Entry, button *ui.Button) {
 			ui.MsgBoxError(box, "Error!", err.Error())
 		}
 	})
+}
 
+func getComboBoxValue(box *ui.Combobox, options []string) string {
+	inputIndex := strconv.Itoa(box.Selected())
+	if inputIndex == "-1" {
+		return " "
+	}
+	index, _ := strconv.ParseInt(inputIndex, 0, 64)
+	return options[index]
+}
+
+func refreshPlayerSelection() {
+	PlayerSelection = ui.NewCombobox()
+	filePlayerGrid.Append(PlayerSelection, 0, 2, 1, 1,
+		false, ui.AlignFill, false, ui.AlignFill)
+
+	names, err := getPlayerNames(FileSelection)
+	if err != nil {
+		ui.MsgBoxError(mainWin, "Error!", err.Error())
+		return
+	} else {
+		PlayerNames = names
+	}
+
+	for _, value := range PlayerNames {
+		PlayerSelection.Append(value)
+	}
 }

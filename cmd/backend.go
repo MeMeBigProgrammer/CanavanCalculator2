@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"github.com/360EntSecGroup-Skylar/excelize"
-	"io/ioutil"
 	"github.com/skratchdot/open-golang/open"
-	"time"
+	"io/ioutil"
 	"strconv"
+	"time"
 )
 
 // Constants for Excel
@@ -110,7 +110,7 @@ func appendDataRow(filepath string, data DataInput) (err error) {
 		plateAppearenceIndex,
 		balls,
 		strikes,
-		balls + strikes }
+		balls + strikes}
 
 	stringToInsert := []string{
 		dataInputMappings[data.PitchType],
@@ -120,7 +120,7 @@ func appendDataRow(filepath string, data DataInput) (err error) {
 		dataInputMappings[data.HitLocations],
 		data.PitcherName,
 		dataInputMappings[data.PitcherHands],
-		data.OpponentTeamName }
+		data.OpponentTeamName}
 
 	f.InsertRow(data.sheetName, 1)
 	f.SetCellValue(data.sheetName, "A2", currentTime)
