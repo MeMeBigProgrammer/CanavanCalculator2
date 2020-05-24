@@ -72,6 +72,7 @@ func setupSettingsGrid(grid *ui.Grid) {
 	AddPlayer.Disable()
 	AddData.Disable()
 	PlayerSelection.Disable()
+	ShowHitLocations.Disable()
 
 	grid.Append(ShowHitLocations, 1, 0, 1, 1,
 		false, ui.AlignFill, false, ui.AlignFill)
@@ -104,9 +105,7 @@ func setupSettingsGrid(grid *ui.Grid) {
 		// open using run
 		// delete on close
 		showHitLocationGuideImage(FileSelection)
-
 	})
-
 }
 
 func setupDialogBox(box *ui.Window, entry *ui.Entry, button *ui.Button) {

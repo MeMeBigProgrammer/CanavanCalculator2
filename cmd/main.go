@@ -119,11 +119,13 @@ func setupUI() {
 			AddPlayer.Enable()
 			AddData.Enable()
 			PlayerSelection.Enable()
+			ShowHitLocations.Enable()
 		} else {
 			ui.MsgBoxError(mainWin, "Error!", "Not a valid Excel file!")
 			AddPlayer.Disable()
 			AddData.Disable()
 			PlayerSelection.Disable()
+			ShowHitLocations.Disable()
 		}
 	})
 
@@ -166,8 +168,21 @@ func setupUI() {
 		if !isValid {
 			ui.MsgBoxError(mainWin, "Error!", err.Error())
 		} else {
-			appendDataRow(FileSelection, newData)
-			// send data to excel and save
+			err := appendDataRow(FileSelection, newData)
+			if err != nil {
+				ui.MsgBoxError(mainWin, "Error!", err.Error())
+			} else {
+				StrikesEntry.SetText("")
+				BallsEntry.SetText("")
+				PitcherNameEntry.SetText("")
+				OpponentTeamName.SetText("")
+				PitchTypeSelection.SetSelected(-1)
+				PitchLocationSelection.SetSelected(-1)
+				OutcomeSelection.SetSelected(-1)
+				HitTypeSelection.SetSelected(-1)
+				HitLocationsSelection.SetSelected(-1)
+				PitcherHandSelection.SetSelected(-1)
+			}
 		}
 	})
 
@@ -186,8 +201,4 @@ func setupUI() {
 
 func main() {
 	ui.Main(setupUI)
-	/* TODO:
-	1. Add Data Append and verify
-	2. Add image display
-	*/
 }

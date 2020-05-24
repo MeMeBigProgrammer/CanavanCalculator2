@@ -96,19 +96,23 @@ func appendDataRow(filepath string, data DataInput) (err error) {
 			fmt.Println(err.Error())
 		}
 		value, _ := strconv.ParseInt(row[1], 0, 64)
-		fmt.Println("PA", row[1])
-		plateAppearenceIndex = int(value) + 1
+		if int(value) > plateAppearenceIndex {
+			plateAppearenceIndex = int(value) + 1
+			fmt.Println("PA", row[1], plateAppearenceIndex)
+		}
 	}
 
 	currentTime := time.Now().Format("2006-01-02 3:4:5 pm")
 	balls := data.Balls
 	strikes := data.Strikes
 
-	dataToInsert := []string{currentTime,
-		strconv.Itoa(plateAppearenceIndex),
-		strconv.Itoa(balls),
-		strconv.Itoa(strikes),
-		strconv.Itoa(balls + strikes),
+	dataToInsert := []int{
+		plateAppearenceIndex,
+		balls,
+		strikes,
+		balls + strikes }
+
+	stringToInsert := []string{
 		dataInputMappings[data.PitchType],
 		data.PitchLocation,
 		dataInputMappings[data.Outcome],
@@ -119,12 +123,13 @@ func appendDataRow(filepath string, data DataInput) (err error) {
 		data.OpponentTeamName }
 
 	f.InsertRow(data.sheetName, 1)
-	f.SetSheetRow(data.sheetName, "A2", &dataToInsert)
+	f.SetCellValue(data.sheetName, "A2", currentTime)
+	f.SetSheetRow(data.sheetName, "B2", &dataToInsert)
+	f.SetSheetRow(data.sheetName, "F2", &stringToInsert)
 	err = f.Save()
 	if err != nil {
 		return err
 	}
 
 	return nil
-
 }
