@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/andlabs/ui"
 	_ "github.com/andlabs/ui/winmanifest"
+	"strconv"
 )
 
 func setupForm(form *ui.Form) {
